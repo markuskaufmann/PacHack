@@ -1,9 +1,13 @@
-from app.dto import ReturnDirections
+from app.dto.ReturnDirections import ReturnDirections
 from app.dto.HelperDTOs import Directions
 from app.gamefield import path
 
 class PublicPlayer:
+
     FLAG = False
+    GOAL = []
+    PATH = []
+
     def __init__(self, game_field, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
         self.isPacman = isPacman
         self.direction = direction
@@ -13,7 +17,6 @@ class PublicPlayer:
         if (jsonString != None):
             self.__dict__ = jsonString
             self.game_field = game_field
-            self.goal = [5, 0]
 
     def __str__(self):
         returnVal = 'G'
@@ -32,22 +35,24 @@ class PublicPlayer:
     def getPossibleActions(self):
         return self.game_field.givePossibleActions(self.position[0], self.position[1])
 
-    def ChoseAction(self):
+    def SetGoal(self):
         # return ReturnDirections.NORTH
-        if PublicPlayer.FLAG:
-            return
+        goal_position = self.game_field.get_target_locations()[0]
 
-        PublicPlayer.FLAG = True
+        if PublicPlayer.GOAL != goal_position:
+            PublicPlayer.GOAL = goal_position
+            goal_path = path.astar(self.game_field.grid, (self.position[0], self.position[1]), (PublicPlayer.GOAL[1], PublicPlayer.GOAL[0]))
+            print("################################################################################")
+            print("################################################################################")
+            print("PATH FOUND! : ")
+            PublicPlayer.PATH = goal_path
+            print("Path: ", goal_path)
 
-        next_pos = path.astar(self.game_field.grid, self.position, self.goal)
-        if next_pos is None:
-            return ReturnDirections.North
+    def ChoseAction(self):
+        if len(PublicPlayer.PATH) == 0:
+            return ReturnDirections.STOP
 
-        print("################################################################################")
-        print("################################################################################")
-        print("PATH FOUNG! : ")
-        print(next_pos)
-        next_pos = next_pos[0]
+        next_pos = PublicPlayer.PATH.pop()
 
         if next_pos[0] == self.position[0] - 1:
             return ReturnDirections.NORTH

@@ -33,7 +33,7 @@ def move():
     actions_opponent = opponent.getPossibleActions()
     print("Possible actions agent: {0}".format(actions_agent))
     print("Possible actions opponent: {0}".format(actions_opponent))
-    thread = Thread(target=agent.ChoseAction).start()
+    Thread(target=agent.SetGoal).start()
     action = agent.ChoseAction()
     return action
 

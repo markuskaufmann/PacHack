@@ -8,13 +8,17 @@ class HelperDTO(object):
 class GameField(object):
 
     AGENT_FOOD_MAP = {
-        0: [17, 33],
-        1: [1, 16]
+        0: [],
+        1: []
     }
 
     def __init__(self, game_field, agent_id) -> None:
-        self.game_field = game_field
+        self.grid = game_field
         self.agent_id = agent_id
+        field_size_x = len(game_field[0])
+        GameField.AGENT_FOOD_MAP[0] = [int(field_size_x / 2), field_size_x - 1]
+        GameField.AGENT_FOOD_MAP[1] = [1, int(field_size_x / 2) - 1]
+        print(GameField.AGENT_FOOD_MAP)
         self.food_range = GameField.AGENT_FOOD_MAP[self.agent_id]
         print(game_field)
 
@@ -24,16 +28,16 @@ class GameField(object):
         possible_movements = []
         print("position: {0} {1}".format(pos_x, pos_y))
         if pos_y > 0:
-            if self.game_field[pos_y - 1][pos_x] != "%":
+            if self.grid[pos_y - 1][pos_x] != "%":
                 possible_movements.append(Directions.NORTH)
-        if pos_y < len(self.game_field):
-            if self.game_field[pos_y + 1][pos_x] != "%":
+        if pos_y < len(self.grid):
+            if self.grid[pos_y + 1][pos_x] != "%":
                 possible_movements.append(Directions.SOUTH)
         if pos_x > 0:
-            if self.game_field[pos_y][pos_x + 1] != "%":
+            if self.grid[pos_y][pos_x + 1] != "%":
                 possible_movements.append(Directions.EAST)
-        if pos_x < len(self.game_field[0]):
-            if self.game_field[pos_y][pos_x - 1] != "%":
+        if pos_x < len(self.grid[0]):
+            if self.grid[pos_y][pos_x - 1] != "%":
                 possible_movements.append(Directions.WEST)
         print(possible_movements)
         return possible_movements
@@ -55,9 +59,9 @@ class GameField(object):
 
     def _get_food_locations(self):
         food_positions = []
-        for idx_y in range(len(self.game_field)):
+        for idx_y in range(len(self.grid)):
             for idx_x in range(self.food_range[0], self.food_range[1] + 1):
-                pos = self.game_field[idx_y][idx_x]
+                pos = self.grid[idx_y][idx_x]
                 if pos == "\u00b0":
                     food_positions.append([idx_x, idx_y])
         return food_positions
