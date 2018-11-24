@@ -64,6 +64,10 @@ class GameField(object):
 
         return GameField.ESCAPE_POINTS
 
+    def is_agent_home(self, position):
+        food_map = GameField.AGENT_FOOD_MAP[1 if self.agent_id == 0 else 0]
+        home = food_map[0] <= position[0] <= food_map[1]
+        return home
 
     def _get_food_locations(self):
         food_positions = []

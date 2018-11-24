@@ -37,6 +37,11 @@ class PublicPlayer:
     def getPossibleActions(self):
         return self.game_field.givePossibleActions(self.position[0], self.position[1])
 
+    def chase_oponnent(self, opp_x, opp_y):
+        path_enemy = path.astar(self.game_field.grid, (opp_y, opp_x),
+                                (self.position[1], self.position[0]))
+        return self.get_action_from_next_pos(path_enemy[len(path_enemy) - 1])
+
     def eat_safe(self, opp_x, opp_y):
         eat_positions = self.game_field.get_target_locations()
 
@@ -51,11 +56,27 @@ class PublicPlayer:
                 if len(path_agent) == 0: return ReturnDirections.STOP
                 return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
 
+    def return_to_escape_point(self):
+        escape_points = self.game_field.get_escape_points()
+        nearest = None
+        for pos in escape_points:
+            path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
+                               (pos[1], pos[0]))
+            if nearest is None:
+                nearest = path_agent
+            elif len(path_agent) < len(nearest):
+                nearest = path_agent
+        return self.get_action_from_next_pos(nearest[len(nearest) - 1])
 
     def panic_action(self, opp_x, opp_y):
         escape_points = self.game_field.get_escape_points()
-
+        counter = 0
         for pos in escape_points:
+            if counter > 3:
+                break
+
+            counter += 1
+
             print("çççççççççççççççççççççççççççç")
             print(escape_points)
             path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
@@ -65,11 +86,23 @@ class PublicPlayer:
             print("path agent: ", path_agent)
             print("path enemy: ", path_enemy)
             if len(path_agent) < len(path_enemy):
-                if len(path_agent) == 0: return ReturnDirections.STOP
+                if len(path_agent) == 0:
+                    return ReturnDirections.STOP
+
                 print("çççççççççççççççççççççççççççç")
                 print("Escaping to ", pos)
                 print("çççççççççççççççççççççççççççç")
                 return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
+        possible_actions = self.game_field.givePossibleActions(self.position[0], self.position[1])
+
+        if possible_actions == Directions.WEST:
+            return ReturnDirections.WEST
+        elif possible_actions == Directions.EAST:
+            return ReturnDirections.EAST
+        elif possible_actions == Directions.NORTH:
+            return ReturnDirections.NORTH
+        elif possible_actions == Directions.SOUTH:
+            return ReturnDirections.SOUTH
 
         return ReturnDirections.STOP
 
