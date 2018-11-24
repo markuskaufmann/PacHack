@@ -19,14 +19,20 @@ def start():
 def move():
     data = PublicGameState(ext_dict=bottle.request.json)
     data_dict = data.__dict__
-    game_field = GameField(data_dict['gameField'])
-    # print(data)
-    public_players = data_dict['publicPlayers']
     agent_id = data_dict['agent_id']
+    public_players = data_dict['publicPlayers']
+    game_field = GameField(data_dict['gameField'], agent_id)
     agent = PublicPlayer(game_field=game_field, jsonString=public_players[agent_id])
     opponent = PublicPlayer(game_field=game_field, jsonString=public_players[0 if agent_id == 1 else 1])
-    #print("Possible actions agent: {0}".format(agent.getPossibleActions()))
-    #print("Possible actions opponent: {0}".format(opponent.getPossibleActions()))
+    target_locations = game_field.get_target_locations()
+    print("target locations: {0}".format(target_locations))
+    print("home field: {0}".format(game_field.get_agent_home()))
+    agent = PublicPlayer(game_field=game_field, jsonString=public_players[agent_id])
+    opponent = PublicPlayer(game_field=game_field, jsonString=public_players[0 if agent_id == 1 else 1])
+    actions_agent = agent.getPossibleActions()
+    actions_opponent = opponent.getPossibleActions()
+    print("Possible actions agent: {0}".format(actions_agent))
+    print("Possible actions opponent: {0}".format(actions_opponent))
     thread = Thread(target=agent.ChoseAction).start()
     action = agent.ChoseAction()
     return action

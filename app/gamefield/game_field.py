@@ -1,5 +1,4 @@
 from app.dto.HelperDTOs import Directions
-from app.gamefield import path
 
 
 class HelperDTO(object):
@@ -7,27 +6,58 @@ class HelperDTO(object):
 
 
 class GameField(object):
-    def __init__(self, gameField) -> None:
-        self.grid = gameField
-        # print(gameField)
 
-    def givePossibleActions(self, posX, posY):
+    AGENT_FOOD_MAP = {
+        0: [17, 33],
+        1: [1, 16]
+    }
 
-        posX = int(posX)
-        posY = int(posY)
-        possibleMovementsArray = []
-        # print("position: {0} {1}".format(posX, posY))
-        if posY > 0:
-            if self.grid[posY - 1][posX] != "%":
-                possibleMovementsArray.append(Directions.NORTH)
-        if posY < len(self.grid):
-            if self.grid[posY + 1][posX] != "%":
-                possibleMovementsArray.append(Directions.SOUTH)
-        if posX > 0:
-            if self.grid[posY][posX + 1] != "%":
-                possibleMovementsArray.append(Directions.EAST)
-        if posX < len(self.grid[0]):
-            if self.grid[posY][posX - 1] != "%":
-                possibleMovementsArray.append(Directions.WEST)
-        #print(possibleMovementsArray)
-        return possibleMovementsArray
+    def __init__(self, game_field, agent_id) -> None:
+        self.game_field = game_field
+        self.agent_id = agent_id
+        self.food_range = GameField.AGENT_FOOD_MAP[self.agent_id]
+        print(game_field)
+
+    def givePossibleActions(self, pos_x, pos_y):
+        pos_x = int(pos_x)
+        pos_y = int(pos_y)
+        possible_movements = []
+        print("position: {0} {1}".format(pos_x, pos_y))
+        if pos_y > 0:
+            if self.game_field[pos_y - 1][pos_x] != "%":
+                possible_movements.append(Directions.NORTH)
+        if pos_y < len(self.game_field):
+            if self.game_field[pos_y + 1][pos_x] != "%":
+                possible_movements.append(Directions.SOUTH)
+        if pos_x > 0:
+            if self.game_field[pos_y][pos_x + 1] != "%":
+                possible_movements.append(Directions.EAST)
+        if pos_x < len(self.game_field[0]):
+            if self.game_field[pos_y][pos_x - 1] != "%":
+                possible_movements.append(Directions.WEST)
+        print(possible_movements)
+        return possible_movements
+
+    def get_target_locations(self):
+        food_locations = self._get_food_locations()
+        if len(food_locations) == 0:
+            return self._get_agent_home_field()
+        return food_locations
+
+    def get_agent_home(self):
+        return self._get_agent_home_field()
+
+    def _get_agent_home_field(self):
+        food_map = GameField.AGENT_FOOD_MAP[self.agent_id]
+        loc_y = 1
+        loc_x = food_map[0] - 1 if self.agent_id == 0 else food_map[1] + 1
+        return [loc_x, loc_y]
+
+    def _get_food_locations(self):
+        food_positions = []
+        for idx_y in range(len(self.game_field)):
+            for idx_x in range(self.food_range[0], self.food_range[1] + 1):
+                pos = self.game_field[idx_y][idx_x]
+                if pos == "\u00b0":
+                    food_positions.append([idx_x, idx_y])
+        return food_positions
