@@ -2,13 +2,14 @@ from app.dto.HelperDTOs import Directions
 
 
 class PublicPlayer:
-    def __init__(self, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
+    def __init__(self, game_field, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
         self.isPacman = isPacman
         self.direction = direction
         self.position = position
         self.activeCapsule = activeCapsule
         if (jsonString != None):
             self.__dict__ = jsonString
+            self.game_field = game_field
 
     def __str__(self):
         returnVal = 'G'
@@ -23,3 +24,6 @@ class PublicPlayer:
         if self.isPacman:
             return returnVal.lower()
         return returnVal.upper()
+
+    def getPossibleActions(self):
+        return self.game_field.givePossibleActions(self.position[0], self.position[1])
