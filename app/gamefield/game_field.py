@@ -1,4 +1,5 @@
 from app.dto.HelperDTOs import Directions
+from app.gamefield import path
 
 
 class HelperDTO(object):
@@ -7,25 +8,26 @@ class HelperDTO(object):
 
 class GameField(object):
     def __init__(self, gameField) -> None:
-        self.gameField = gameField
-        print(gameField)
+        self.grid = gameField
+        # print(gameField)
 
     def givePossibleActions(self, posX, posY):
+
         posX = int(posX)
         posY = int(posY)
         possibleMovementsArray = []
-        print("position: {0} {1}".format(posX, posY))
+        # print("position: {0} {1}".format(posX, posY))
         if posY > 0:
-            if self.gameField[posY - 1][posX] != "%":
+            if self.grid[posY - 1][posX] != "%":
                 possibleMovementsArray.append(Directions.NORTH)
-        if posY < len(self.gameField):
-            if self.gameField[posY + 1][posX] != "%":
+        if posY < len(self.grid):
+            if self.grid[posY + 1][posX] != "%":
                 possibleMovementsArray.append(Directions.SOUTH)
         if posX > 0:
-            if self.gameField[posY][posX + 1] != "%":
+            if self.grid[posY][posX + 1] != "%":
                 possibleMovementsArray.append(Directions.EAST)
-        if posX < len(self.gameField[0]):
-            if self.gameField[posY][posX - 1] != "%":
+        if posX < len(self.grid[0]):
+            if self.grid[posY][posX - 1] != "%":
                 possibleMovementsArray.append(Directions.WEST)
-        print(possibleMovementsArray)
+        #print(possibleMovementsArray)
         return possibleMovementsArray

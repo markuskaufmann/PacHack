@@ -1,7 +1,7 @@
 import random
 
 
-class ReturnDirections():
+class ReturnDirections:
     NORTH = '\"North\"'
     SOUTH = '\"South\"'
     EAST = '\"East\"'
