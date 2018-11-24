@@ -37,19 +37,41 @@ class PublicPlayer:
     def getPossibleActions(self):
         return self.game_field.givePossibleActions(self.position[0], self.position[1])
 
-    def choose_action(self):
+    def eat_safe(self, opp_x, opp_y):
+        pass
+
+    def panic_action(self, opp_x, opp_y):
+        escape_points = self.game_field.get_escape_points()
+
+        for i in range(len(escape_points)):
+            print("çççççççççççççççççççççççççççç")
+            print(escape_points)
+            path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
+                               (escape_points[i][0], escape_points[i][1]))
+            path_enemy = path.astar(self.game_field.grid, (opp_y, opp_x),
+                                (escape_points[i][0], escape_points[i][1]))
+            if len(path_agent) < len(path_enemy):
+                print("çççççççççççççççççççççççççççç")
+                print("Escaping to ", escape_points[i])
+                print("çççççççççççççççççççççççççççç")
+                return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
+
+    def eat_action(self):
         # return ReturnDirections.NORTH
         goal_position = self.game_field.get_target_locations()[0]
 
         #if PublicPlayer.GOAL != goal_position:
+        return self.get_goal_action(goal_position)
+
+    def get_goal_action(self, goal_position):
         PublicPlayer.GOAL = goal_position
-        goal_path = path.astar(self.game_field.grid, (self.position[1], self.position[0]), (PublicPlayer.GOAL[1], PublicPlayer.GOAL[0]))
+        goal_path = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
+                               (PublicPlayer.GOAL[1], PublicPlayer.GOAL[0]))
         print("###### ##########################################################################")
         print("################################################################################")
         print("PATH FOUND! : ")
         PublicPlayer.PATH = goal_path
         print("Path: ", goal_path)
-
         return self.get_action_from_next_pos(goal_path[len(goal_path) - 1])
 
     def dist_to_opponent(self, opp_x, opp_y):

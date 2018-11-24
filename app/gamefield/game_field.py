@@ -6,7 +6,7 @@ class HelperDTO(object):
 
 
 class GameField(object):
-
+    ESCAPE_POINTS = []
     AGENT_FOOD_MAP = {
         0: [],
         1: []
@@ -18,9 +18,8 @@ class GameField(object):
         field_size_x = len(game_field[0])
         GameField.AGENT_FOOD_MAP[0] = [int(field_size_x / 2), field_size_x - 1]
         GameField.AGENT_FOOD_MAP[1] = [1, int(field_size_x / 2) - 1]
-        print(GameField.AGENT_FOOD_MAP)
         self.food_range = GameField.AGENT_FOOD_MAP[self.agent_id]
-        print(game_field)
+        self.escape_points = []
 
     def givePossibleActions(self, pos_x, pos_y):
         pos_x = int(pos_x)
@@ -52,10 +51,19 @@ class GameField(object):
         return self._get_agent_home_field()
 
     def _get_agent_home_field(self):
-        food_map = GameField.AGENT_FOOD_MAP[self.agent_id]
-        loc_y = 1
-        loc_x = food_map[0] - 1 if self.agent_id == 0 else food_map[1] + 1
-        return [loc_x, loc_y]
+        return self.get_escape_points()[0]
+
+    def get_escape_points(self):
+        if len(GameField.ESCAPE_POINTS) == 0:
+            food_map = GameField.AGENT_FOOD_MAP[self.agent_id]
+            loc_x = food_map[0] - 1 if self.agent_id == 0 else food_map[1] + 1
+            for i in range(len(self.grid)):
+                if self.grid[i][loc_x] != "%":
+                    GameField.ESCAPE_POINTS.append([loc_x, i])
+            print(GameField.ESCAPE_POINTS)
+
+        return GameField.ESCAPE_POINTS
+
 
     def _get_food_locations(self):
         food_positions = []

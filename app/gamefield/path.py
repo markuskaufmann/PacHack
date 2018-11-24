@@ -175,8 +175,8 @@ def createMaze(game_field):
             else:
                 maze[y].append(0)
     print("**************** maze made!!")
-    for line in maze:
-        print(line)
+    #for line in maze:
+    #    print(line)
     return np.array(maze)
 
 

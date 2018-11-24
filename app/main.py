@@ -24,10 +24,18 @@ def move():
     game_field = GameField(data_dict['gameField'], agent_id)
     agent = PublicPlayer(game_field=game_field, jsonString=public_players[agent_id])
     opponent = PublicPlayer(game_field=game_field, jsonString=public_players[0 if agent_id == 1 else 1])
-    target_locations = game_field.get_target_locations()
-    print("target locations: {0}".format(target_locations))
-    print("home field: {0}".format(game_field.get_agent_home()))
-    action = agent.choose_action()
+    dist_oponnent = agent.dist_to_opponent(opponent.position[0], opponent.position[1])
+    action = ReturnDirections.STOP
+
+    if dist_oponnent < 5:
+        action = agent.panic_action(opponent.position[0], opponent.position[1])
+    elif dist_oponnent < 20:
+        agent.eat_safe(opponent.position[0], opponent.position[1])
+    else:
+        target_locations = game_field.get_target_locations()
+        print("target locations: {0}".format(target_locations))
+        print("home field: {0}".format(game_field.get_agent_home()))
+        action = agent.eat_action()
     print("action: {0}".format(action))
     return action
 
