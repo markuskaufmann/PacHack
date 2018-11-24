@@ -47,10 +47,13 @@ class PublicPlayer:
             print("çççççççççççççççççççççççççççç")
             print(escape_points)
             path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
-                               (escape_points[i][0], escape_points[i][1]))
+                               (escape_points[i][1], escape_points[i][0]))
             path_enemy = path.astar(self.game_field.grid, (opp_y, opp_x),
-                                (escape_points[i][0], escape_points[i][1]))
+                                (escape_points[i][1], escape_points[i][0]))
+            print("path agent: ", path_agent)
+            print("path enemy: ", path_enemy)
             if len(path_agent) < len(path_enemy):
+                if len(path_agent) == 0: return ReturnDirections.STOP
                 print("çççççççççççççççççççççççççççç")
                 print("Escaping to ", escape_points[i])
                 print("çççççççççççççççççççççççççççç")

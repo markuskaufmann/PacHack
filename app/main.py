@@ -29,8 +29,8 @@ def move():
 
     if dist_oponnent < 5:
         action = agent.panic_action(opponent.position[0], opponent.position[1])
-    elif dist_oponnent < 20:
-        agent.eat_safe(opponent.position[0], opponent.position[1])
+    #elif dist_oponnent < 20:
+    #    agent.eat_safe(opponent.position[0], opponent.position[1])
     else:
         target_locations = game_field.get_target_locations()
         print("target locations: {0}".format(target_locations))
