@@ -95,13 +95,13 @@ class PublicPlayer:
                 return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
         possible_actions = self.game_field.givePossibleActions(self.position[0], self.position[1])
 
-        if possible_actions == Directions.WEST:
+        if Directions.WEST in possible_actions:
             return ReturnDirections.WEST
-        elif possible_actions == Directions.EAST:
+        elif Directions.EAST in possible_actions:
             return ReturnDirections.EAST
-        elif possible_actions == Directions.NORTH:
+        elif Directions.NORTH in possible_actions:
             return ReturnDirections.NORTH
-        elif possible_actions == Directions.SOUTH:
+        elif Directions.SOUTH in possible_actions:
             return ReturnDirections.SOUTH
 
         return ReturnDirections.STOP
