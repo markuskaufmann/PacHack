@@ -38,26 +38,40 @@ class PublicPlayer:
         return self.game_field.givePossibleActions(self.position[0], self.position[1])
 
     def eat_safe(self, opp_x, opp_y):
-        pass
+        eat_positions = self.game_field.get_target_locations()
+
+        for pos in eat_positions:
+            path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
+                               (pos[1], pos[0]))
+            path_enemy = path.astar(self.game_field.grid, (opp_y, opp_x),
+                                (pos[1], pos[0]))
+            print("path agent: ", path_agent)
+            print("path enemy: ", path_enemy)
+            if len(path_agent) < len(path_enemy):
+                if len(path_agent) == 0: return ReturnDirections.STOP
+                return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
+
 
     def panic_action(self, opp_x, opp_y):
         escape_points = self.game_field.get_escape_points()
 
-        for i in range(len(escape_points)):
+        for pos in escape_points:
             print("çççççççççççççççççççççççççççç")
             print(escape_points)
             path_agent = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
-                               (escape_points[i][1], escape_points[i][0]))
+                               (pos[1], pos[0]))
             path_enemy = path.astar(self.game_field.grid, (opp_y, opp_x),
-                                (escape_points[i][1], escape_points[i][0]))
+                                (pos[1], pos[0]))
             print("path agent: ", path_agent)
             print("path enemy: ", path_enemy)
             if len(path_agent) < len(path_enemy):
                 if len(path_agent) == 0: return ReturnDirections.STOP
                 print("çççççççççççççççççççççççççççç")
-                print("Escaping to ", escape_points[i])
+                print("Escaping to ", pos)
                 print("çççççççççççççççççççççççççççç")
                 return self.get_action_from_next_pos(path_agent[len(path_agent) - 1])
+
+        return ReturnDirections.STOP
 
     def eat_action(self):
         # return ReturnDirections.NORTH
