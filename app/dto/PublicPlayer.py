@@ -37,7 +37,7 @@ class PublicPlayer:
     def getPossibleActions(self):
         return self.game_field.givePossibleActions(self.position[0], self.position[1])
 
-    def SetGoal(self):
+    def choose_action(self):
         # return ReturnDirections.NORTH
         goal_position = self.game_field.get_target_locations()[0]
 
@@ -52,15 +52,20 @@ class PublicPlayer:
 
         return self.get_action_from_next_pos(goal_path[len(goal_path) - 1])
 
-    def ChoseAction(self):
-        if len(PublicPlayer.PATH) == 0:
-            return ReturnDirections.STOP
+    def dist_to_opponent(self, opp_x, opp_y):
+        goal_path = path.astar(self.game_field.grid, (self.position[1], self.position[0]),
+                               (opp_y, opp_x))
+        return len(goal_path)
 
-        next_pos = self.position
-        if self.position[0] != next_pos[0] and self.position[1] != next_pos[1]:
-            next_pos = PublicPlayer.PATH.pop()
-
-        return self.get_action_from_next_pos(next_pos)
+    # def ChoseAction(self):
+    #     if len(PublicPlayer.PATH) == 0:
+    #         return ReturnDirections.STOP
+    #
+    #     next_pos = self.position
+    #     if self.position[0] != next_pos[0] and self.position[1] != next_pos[1]:
+    #         next_pos = PublicPlayer.PATH.pop()
+    #
+    #     return self.get_action_from_next_pos(next_pos)
 
     def get_action_from_next_pos(self, next_pos):
         print("next_pos: {0}".format(next_pos))

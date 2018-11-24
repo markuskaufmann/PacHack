@@ -27,14 +27,7 @@ def move():
     target_locations = game_field.get_target_locations()
     print("target locations: {0}".format(target_locations))
     print("home field: {0}".format(game_field.get_agent_home()))
-    agent = PublicPlayer(game_field=game_field, jsonString=public_players[agent_id])
-    opponent = PublicPlayer(game_field=game_field, jsonString=public_players[0 if agent_id == 1 else 1])
-    actions_agent = agent.getPossibleActions()
-    actions_opponent = opponent.getPossibleActions()
-    # print("Possible actions agent: {0}".format(actions_agent))
-    # print("Possible actions opponent: {0}".format(actions_opponent))
-    action = agent.SetGoal()
-    # action = agent.ChoseAction()
+    action = agent.choose_action()
     print("action: {0}".format(action))
     return action
 
