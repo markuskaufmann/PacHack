@@ -31,10 +31,11 @@ def move():
     opponent = PublicPlayer(game_field=game_field, jsonString=public_players[0 if agent_id == 1 else 1])
     actions_agent = agent.getPossibleActions()
     actions_opponent = opponent.getPossibleActions()
-    print("Possible actions agent: {0}".format(actions_agent))
-    print("Possible actions opponent: {0}".format(actions_opponent))
-    Thread(target=agent.SetGoal).start()
-    action = agent.ChoseAction()
+    # print("Possible actions agent: {0}".format(actions_agent))
+    # print("Possible actions opponent: {0}".format(actions_opponent))
+    action = agent.SetGoal()
+    # action = agent.ChoseAction()
+    print("action: {0}".format(action))
     return action
 
 

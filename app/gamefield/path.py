@@ -46,7 +46,7 @@ def astar(array, start, goal):
 
         close_set.add(current)
         for i, j in neighbors:
-            neighbor = current[0] + i, current[1] + j
+            neighbor = int(current[0] + i), int(current[1] + j)
             tentative_g_score = gscore[current] + heuristic(current, neighbor)
             if 0 <= neighbor[0] < array.shape[0]:
                 if 0 <= neighbor[1] < array.shape[1]:
@@ -163,21 +163,22 @@ def old_astar(grid, start, end):
             # Add the child to the open list
             open_list.append(child)
 
+
 def createMaze(game_field):
     maze = []
-
     for y in range(len(game_field)):
         maze.append([])
+    for y in range(len(game_field) - 1, -1, -1):
         for x in range(len(game_field[0])):
             if game_field[y][x] == "%":
                 maze[y].append(1)
             else:
                 maze[y].append(0)
-
     print("**************** maze made!!")
     for line in maze:
         print(line)
     return np.array(maze)
+
 
 def main():
 

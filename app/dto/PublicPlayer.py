@@ -2,13 +2,14 @@ from app.dto.ReturnDirections import ReturnDirections
 from app.dto.HelperDTOs import Directions
 from app.gamefield import path
 
-class PublicPlayer:
 
+class PublicPlayer:
     FLAG = False
     GOAL = []
     PATH = []
 
-    def __init__(self, game_field, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
+    def __init__(self, game_field, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None,
+                 activeCapsule=False):
         self.isPacman = isPacman
         self.direction = direction
         self.position = position
@@ -17,6 +18,7 @@ class PublicPlayer:
         if (jsonString != None):
             self.__dict__ = jsonString
             self.game_field = game_field
+            self.position = [int(self.position[0]), int(self.position[1])]
 
     def __str__(self):
         returnVal = 'G'
@@ -39,28 +41,37 @@ class PublicPlayer:
         # return ReturnDirections.NORTH
         goal_position = self.game_field.get_target_locations()[0]
 
-        if PublicPlayer.GOAL != goal_position:
-            PublicPlayer.GOAL = goal_position
-            goal_path = path.astar(self.game_field.grid, (self.position[0], self.position[1]), (PublicPlayer.GOAL[1], PublicPlayer.GOAL[0]))
-            print("################################################################################")
-            print("################################################################################")
-            print("PATH FOUND! : ")
-            PublicPlayer.PATH = goal_path
-            print("Path: ", goal_path)
+        #if PublicPlayer.GOAL != goal_position:
+        PublicPlayer.GOAL = goal_position
+        goal_path = path.astar(self.game_field.grid, (self.position[1], self.position[0]), (PublicPlayer.GOAL[1], PublicPlayer.GOAL[0]))
+        print("###### ##########################################################################")
+        print("################################################################################")
+        print("PATH FOUND! : ")
+        PublicPlayer.PATH = goal_path
+        print("Path: ", goal_path)
+
+        return self.get_action_from_next_pos(goal_path[len(goal_path) - 1])
 
     def ChoseAction(self):
         if len(PublicPlayer.PATH) == 0:
             return ReturnDirections.STOP
 
-        next_pos = PublicPlayer.PATH.pop()
+        next_pos = self.position
+        if self.position[0] != next_pos[0] and self.position[1] != next_pos[1]:
+            next_pos = PublicPlayer.PATH.pop()
 
-        if next_pos[0] == self.position[0] - 1:
+        return self.get_action_from_next_pos(next_pos)
+
+    def get_action_from_next_pos(self, next_pos):
+        print("next_pos: {0}".format(next_pos))
+        print("self_pos: {0}".format(self.position))
+        if next_pos[0] == self.position[1] + 1:
             return ReturnDirections.NORTH
-        if next_pos[0] == self.position[0] + 1:
+        if next_pos[0] == self.position[1] - 1:
             return ReturnDirections.SOUTH
-        if next_pos[1] == self.position[1] - 1:
+        if next_pos[1] == self.position[0] - 1:
             return ReturnDirections.WEST
-        if next_pos[1] == self.position[1] + 1:
+        if next_pos[1] == self.position[0] + 1:
             return ReturnDirections.EAST
         else:
-            InterruptedError("not interrupted, but you fucked up the chose action alg")
+            return ReturnDirections.STOP
